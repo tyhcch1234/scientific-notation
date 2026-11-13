@@ -1,0 +1,1198 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-HK">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#4f46e5">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%234f46e5'/%3E%3Ctext x='50' y='68' font-size='54' font-family='Georgia,serif' font-weight='700' text-anchor='middle' fill='white'%3E10%3C/text%3E%3C/svg%3E">
+<title>科學記數法 · 互動教學</title>
+<meta name="description" content="以互動小數點移位示範，學習科學記數法：大數、小數的表示法，以及由科學記數法還原數值。">
+<style>
+  :root{
+    --ink:#0f172a;
+    --ink-soft:#475569;
+    --line:#e2e8f0;
+    --bg:#f6f8fc;
+    --card:#ffffff;
+    --primary:#4f46e5;
+    --primary-soft:#eef2ff;
+    --teal:#0d9488;
+    --teal-soft:#ecfdf5;
+    --amber:#d97706;
+    --amber-soft:#fffbeb;
+    --rose:#e11d48;
+    --rose-soft:#fff1f2;
+    --shadow:0 1px 2px rgba(15,23,42,.06),0 12px 32px -12px rgba(15,23,42,.18);
+    --radius:20px;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0;
+    font-family:"Noto Sans TC","PingFang HK","PingFang TC","Microsoft JhengHei","Hiragino Sans GB",system-ui,-apple-system,"Segoe UI",sans-serif;
+    color:var(--ink);
+    background:
+      radial-gradient(900px 500px at 12% -8%, #e0e7ff 0%, rgba(224,231,255,0) 60%),
+      radial-gradient(800px 460px at 92% 4%, #ccfbf1 0%, rgba(204,251,241,0) 55%),
+      var(--bg);
+    line-height:1.75;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1040px;margin:0 auto;padding:0 20px 96px}
+
+  /* ---------- top bar ---------- */
+  .topbar{
+    position:sticky;top:0;z-index:40;
+    backdrop-filter:blur(12px);
+    background:rgba(246,248,252,.82);
+    border-bottom:1px solid rgba(226,232,240,.9);
+  }
+  .topbar-in{max-width:1040px;margin:0 auto;padding:10px 20px;display:flex;align-items:center;gap:16px}
+  .brand{font-weight:800;letter-spacing:.02em;font-size:15px;white-space:nowrap;display:flex;align-items:center;gap:8px}
+  .brand .dotmark{width:10px;height:10px;border-radius:50%;background:linear-gradient(135deg,var(--primary),var(--teal))}
+  .navlinks{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;flex:1}
+  .navlinks::-webkit-scrollbar{display:none}
+  .navlinks a{
+    font-size:13.5px;color:var(--ink-soft);text-decoration:none;padding:6px 11px;border-radius:999px;white-space:nowrap;transition:.18s;
+  }
+  .navlinks a:hover{background:#e8ecf7;color:var(--ink)}
+  .pbar{height:3px;background:transparent}
+  .pbar span{display:block;height:100%;width:0%;background:linear-gradient(90deg,var(--primary),var(--teal));transition:width .15s}
+
+  /* ---------- hero ---------- */
+  .hero{padding:56px 0 28px}
+  .kicker{
+    display:inline-flex;align-items:center;gap:8px;font-size:12.5px;font-weight:700;letter-spacing:.08em;
+    color:var(--primary);background:var(--primary-soft);border:1px solid #e0e7ff;
+    padding:5px 12px;border-radius:999px;text-transform:uppercase;
+  }
+  h1{font-size:clamp(30px,5vw,48px);line-height:1.2;margin:18px 0 10px;letter-spacing:-.01em}
+  h1 .accent{background:linear-gradient(120deg,var(--primary),var(--teal));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .lede{font-size:17.5px;color:var(--ink-soft);max-width:64ch;margin:0}
+  .hero-math{
+    margin-top:30px;display:flex;flex-wrap:wrap;align-items:center;gap:18px;
+    background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+    padding:22px 26px;box-shadow:var(--shadow);
+  }
+  .big-eq{font-size:clamp(26px,4vw,36px);font-weight:600;letter-spacing:.02em}
+  .hero-math .rule{font-size:14.5px;color:var(--ink-soft);border-left:2px solid var(--line);padding-left:18px;min-width:220px}
+
+  /* ---------- sections ---------- */
+  section{margin-top:56px;scroll-margin-top:80px}
+  .sec-head{display:flex;align-items:flex-start;gap:14px;margin-bottom:18px}
+  .sec-num{
+    flex:0 0 auto;width:36px;height:36px;border-radius:11px;display:grid;place-items:center;
+    background:#111827;color:#fff;font-size:14px;font-weight:800;margin-top:4px;
+  }
+  .sec-head h2{font-size:clamp(21px,3vw,27px);margin:0 0 2px;letter-spacing:-.01em}
+  .sec-head p{margin:0;color:var(--ink-soft);font-size:15px}
+  .card{
+    background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+    padding:26px 26px;box-shadow:var(--shadow);
+  }
+  .card + .card{margin-top:16px}
+  .tag{display:inline-block;font-size:12px;font-weight:800;letter-spacing:.06em;padding:3px 10px;border-radius:999px}
+  .tag.ex{background:var(--primary-soft);color:var(--primary)}
+  .tag.pr{background:var(--teal-soft);color:#0f766e}
+  .tag.ch{background:var(--amber-soft);color:#b45309}
+
+  /* ---------- shifter ---------- */
+  .shifter{border:1px solid var(--line);border-radius:16px;background:linear-gradient(#fbfcff,#f7f9ff);padding:22px 20px 18px}
+  .shift-row{display:flex;align-items:center;flex-wrap:wrap;gap:14px;justify-content:center;min-height:74px}
+  .num{
+    display:inline-block;white-space:nowrap;font-family:"Cambria Math",Cambria,"Times New Roman",serif;
+    font-size:clamp(30px,5.4vw,44px);font-weight:600;letter-spacing:.02em;font-variant-numeric:tabular-nums;
+    line-height:1.1;
+  }
+  .num .sign{margin-right:2px}
+  .num .d{
+    display:inline-block;min-width:.6em;text-align:center;padding:0 .01em .08em;border-bottom:3px solid #e2e8f0;
+  }
+  .dot{
+    display:inline-block;width:.26em;height:.26em;border-radius:50%;background:var(--rose);
+    margin:0 .05em;vertical-align:baseline;box-shadow:0 0 0 4px rgba(225,29,72,.12);position:relative;top:.02em;z-index:2;
+  }
+  .dot.moving{box-shadow:0 0 0 8px rgba(225,29,72,.18)}
+  .times{font-size:clamp(26px,3.8vw,34px);color:var(--ink-soft);font-family:"Cambria Math",Cambria,serif}
+  .exp{
+    display:inline-block;white-space:nowrap;font-family:"Cambria Math",Cambria,"Times New Roman",serif;
+    font-size:clamp(30px,5vw,42px);font-weight:600;
+  }
+  .exp sup{font-size:.56em;vertical-align:baseline;position:relative;top:-.58em;line-height:1;color:var(--primary);font-weight:700;margin-left:.02em}
+  .exp sup.neg{color:var(--rose)}
+  .exp sup.zero{color:var(--ink-soft)}
+  .shift-hint{text-align:center;color:var(--ink-soft);font-size:14.5px;margin-top:6px;min-height:26px}
+  .shift-hint b{color:var(--primary)}
+  .controls{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:16px}
+  button{
+    font:inherit;font-size:14.5px;font-weight:700;cursor:pointer;border-radius:12px;border:1px solid var(--line);
+    background:#fff;color:var(--ink);padding:9px 16px;transition:.16s;display:inline-flex;align-items:center;gap:7px;
+  }
+  button:hover{border-color:#c7d2fe;background:#f8faff;transform:translateY(-1px)}
+  button:active{transform:translateY(0)}
+  button:disabled{opacity:.42;cursor:not-allowed;transform:none}
+  button.primary{background:var(--primary);border-color:var(--primary);color:#fff}
+  button.primary:hover{background:#4338ca;border-color:#4338ca}
+  button.ghost{background:transparent}
+  button.ok{background:var(--teal);border-color:var(--teal);color:#fff}
+  .state{
+    display:flex;gap:8px;justify-content:center;margin-top:14px;flex-wrap:wrap;font-size:12.5px;color:var(--ink-soft)
+  }
+  .pill{background:#fff;border:1px solid var(--line);border-radius:999px;padding:3px 11px}
+  .pill.live{border-color:#a5b4fc;background:var(--primary-soft);color:#3730a3;font-weight:700}
+  .pill.done{border-color:#99f6e4;background:var(--teal-soft);color:#0f766e;font-weight:700}
+  .tabs{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-bottom:16px}
+  .tab{display:inline-block;font-size:14px;font-weight:700;padding:6px 14px;border-radius:10px;border:1px solid var(--line);background:#fff;color:var(--ink-soft)}
+  .tab sup{font-size:.72em;vertical-align:super;line-height:0}
+  .tab.on{background:#111827;border-color:#111827;color:#fff}
+  .num .d.pad{color:#94a3b8}
+  .dot.ghost{opacity:.22;box-shadow:none}
+
+  /* ---------- examples / practice ---------- */
+  .ex-item{padding:18px 0;border-bottom:1px dashed var(--line)}
+  .ex-item:last-child{border-bottom:0;padding-bottom:6px}
+  .ex-q{display:flex;gap:14px;align-items:baseline;flex-wrap:wrap;font-size:19px}
+  .lb{font-weight:800;color:var(--primary);min-width:34px}
+  .ansline{margin-top:10px;padding-left:48px;color:var(--ink)}
+  .ansline .eq{font-size:20px;font-family:"Cambria Math",Cambria,serif}
+  .ansline .why{color:var(--ink-soft);font-size:14px;margin-left:12px}
+  .steps{display:none;margin-top:14px;padding-left:48px}
+  .steps.show{display:block;animation:fade .3s ease}
+  @keyframes fade{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+
+  .qgrid{display:grid;gap:14px}
+  .q{
+    display:grid;grid-template-columns:34px 1fr;gap:12px;align-items:start;
+    padding:14px 16px;border:1px solid var(--line);border-radius:14px;background:#fcfdff;
+  }
+  .q.resolved{border-color:#bbf7d0;background:#f6fffb}
+  .q .qn{font-weight:800;color:var(--ink-soft);font-size:15px;padding-top:2px}
+  .q .stem{font-size:16.5px}
+  .q .stem .m{font-family:"Cambria Math",Cambria,serif;font-size:18.5px;font-weight:600}
+  .answer{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:10px}
+  .answer label{font-size:13.5px;color:var(--ink-soft)}
+  input[type="text"],input[type="number"]{
+    font:inherit;font-size:17px;font-family:"Cambria Math",Cambria,serif;font-weight:600;
+    padding:6px 10px;border-radius:10px;border:1px solid #cbd5e1;background:#fff;color:var(--ink);
+    width:120px;transition:.15s;
+  }
+  input.exp-in{width:78px}
+  input:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 3px rgba(79,70,229,.15)}
+  input.good{border-color:var(--teal);background:#f0fdfa}
+  input.bad{border-color:var(--rose);background:var(--rose-soft)}
+  .x10{font-family:"Cambria Math",Cambria,serif;font-size:19px;color:var(--ink-soft);display:inline-block;white-space:nowrap}
+  .x10 sup{font-size:.66em}
+  .fb{margin-top:8px;font-size:14px;display:none;padding:8px 12px;border-radius:10px}
+  .fb.show{display:block;animation:fade .25s ease}
+  .fb.good{background:var(--teal-soft);color:#0f766e}
+  .fb.warn{background:var(--amber-soft);color:#92400e}
+  .fb.bad{background:var(--rose-soft);color:#9f1239}
+  .sol{margin-top:8px;font-size:15px;color:var(--ink);display:none;padding-left:2px}
+  .sol.show{display:block}
+  .sol .k{font-family:"Cambria Math",Cambria,serif;font-weight:600}
+
+  .btnrow{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:16px}
+  .score{margin-left:auto;font-size:14px;color:var(--ink-soft)}
+  .score b{color:var(--ink);font-size:16px}
+
+  /* ---------- facts ---------- */
+  .cols{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .fact{border:1px solid var(--line);border-radius:16px;padding:18px 20px;background:#fff}
+  .fact h4{margin:0 0 8px;font-size:15.5px}
+  .fact p{margin:0;font-size:14.5px;color:var(--ink-soft)}
+  .fact.bad-fact{background:var(--rose-soft);border-color:#fecdd3}
+  .fact.good-fact{background:var(--teal-soft);border-color:#bbf7d0}
+  .fact ul{margin:8px 0 0;padding-left:20px;font-size:14.5px;color:var(--ink-soft)}
+  .fact li{margin:4px 0}
+  .powers{display:grid;grid-template-columns:repeat(auto-fit,minmax(104px,1fr));gap:8px;margin-top:12px}
+  .pw{border:1px solid var(--line);border-radius:10px;padding:8px 6px;text-align:center;background:#fbfcff;font-size:13px}
+  .pw b{display:block;font-family:"Cambria Math",Cambria,serif;font-size:15px;color:var(--primary)}
+  .pw.neg b{color:var(--rose)}
+
+  /* ---------- quiz ---------- */
+  .quiz-shell{background:linear-gradient(160deg,#111827,#1e293b);color:#e2e8f0;border-radius:var(--radius);padding:26px;box-shadow:var(--shadow)}
+  .quiz-top{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-bottom:6px}
+  .quiz-top h3{margin:0;font-size:19px;color:#fff}
+  .quiz-meta{font-size:13px;color:#94a3b8}
+  .quiz-bar{height:6px;background:#334155;border-radius:999px;overflow:hidden;margin:12px 0 22px}
+  .quiz-bar span{display:block;height:100%;width:0;background:linear-gradient(90deg,#818cf8,#2dd4bf);transition:width .3s}
+  .qtext{font-size:clamp(19px,3vw,24px);font-weight:600;margin:0 0 4px;color:#fff;line-height:1.6}
+  .qtext .m{font-family:"Cambria Math",Cambria,serif;font-size:1.15em}
+  .quiz-shell .answer label{color:#94a3b8}
+  .quiz-shell input{background:#0f172a;border-color:#334155;color:#f1f5f9}
+  .quiz-shell .x10{color:#94a3b8}
+  .quiz-shell .fb.good{background:rgba(13,148,136,.18);color:#5eead4}
+  .quiz-shell .fb.bad{background:rgba(225,29,72,.16);color:#fda4af}
+  .quiz-shell .fb.warn{background:rgba(217,119,6,.16);color:#fcd34d}
+  .quiz-shell button{background:#1e293b;border-color:#334155;color:#e2e8f0}
+  .quiz-shell button:hover{background:#273549;border-color:#4b5f7d}
+  .quiz-shell button.primary{background:#6366f1;border-color:#6366f1;color:#fff}
+  .quiz-done{display:none;text-align:center;padding:14px 0 4px}
+  .quiz-done.show{display:block;animation:fade .3s ease}
+  .bigscore{font-size:52px;font-weight:800;line-height:1;background:linear-gradient(120deg,#818cf8,#2dd4bf);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .quiz-done p{color:#94a3b8;margin:8px 0 18px}
+
+  footer{margin-top:64px;padding-top:22px;border-top:1px solid var(--line);color:#94a3b8;font-size:13px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+
+  @media (max-width:720px){
+    .cols{grid-template-columns:1fr}
+    .card{padding:20px 18px}
+    .ansline,.steps{padding-left:0}
+    .hero-math{padding:18px}
+    .hero-math .rule{border-left:0;border-top:1px solid var(--line);padding-left:0;padding-top:12px}
+    .q{grid-template-columns:26px 1fr}
+  }
+  @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-in">
+    <div class="brand"><span class="dotmark"></span>科學記數法</div>
+    <nav class="navlinks">
+      <a href="#concept">概念</a>
+      <a href="#ex1">例題一</a>
+      <a href="#p1">練習一</a>
+      <a href="#ex2">例題二</a>
+      <a href="#p2">練習二</a>
+      <a href="#ex3">例題三</a>
+      <a href="#p3">練習三</a>
+      <a href="#quiz">自我測驗</a>
+      <a href="#notes">常見錯誤</a>
+    </nav>
+  </div>
+  <div class="pbar"><span id="progress"></span></div>
+</div>
+
+<div class="wrap">
+
+  <header class="hero">
+    <span class="kicker">03_2B08 · 整數指數律</span>
+    <h1>用一條<span class="accent">會移動的小數點</span><br>學會科學記數法</h1>
+    <p class="lede">科學記數法把很大或很小的數，統一寫成「一個 1 至 10 之間的數 × 10 的次方」。整個技巧只有一個動作：把小數點移到正確位置，然後數清楚移動了幾個位。</p>
+
+    <div class="hero-math">
+      <div class="big-eq">a × 10<sup>n</sup></div>
+      <div class="rule">
+        <strong>1 ≤ |a| &lt; 10</strong>，n 是整數。<br>
+        大於 10 的數 → n 是正數；<br>小於 1 的數 → n 是負數。
+      </div>
+    </div>
+  </header>
+
+  <!-- ===================== 概念 ===================== -->
+  <section id="concept">
+    <div class="sec-head">
+      <div class="sec-num">0</div>
+      <div>
+        <h2>先看清楚：10 的次方就是「位數」</h2>
+        <p>把小數點每向左移一位，數就大了 10 倍；向右移一位，數就小了 10 倍。</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="cols">
+        <div class="fact">
+          <h4>向左移 → 數變大 → 指數增加</h4>
+          <p>700 的小數點本來在最後（700.）。向左移 2 個位：7.00，所以 700 = 7 × 10<sup>2</sup>。</p>
+        </div>
+        <div class="fact">
+          <h4>向右移 → 數變小 → 指數減少</h4>
+          <p>0.045 的小數點向右移 2 個位：4.5，所以 0.045 = 4.5 × 10<sup>−2</sup>。</p>
+        </div>
+      </div>
+
+      <p style="margin:22px 0 0;font-size:14.5px;color:var(--ink-soft)">常用對照（記住這幾個，心算會快很多）：</p>
+      <div class="powers">
+        <div class="pw"><b>10<sup>6</sup></b>1 000 000</div>
+        <div class="pw"><b>10<sup>5</sup></b>100 000</div>
+        <div class="pw"><b>10<sup>4</sup></b>10 000</div>
+        <div class="pw"><b>10<sup>3</sup></b>1 000</div>
+        <div class="pw"><b>10<sup>2</sup></b>100</div>
+        <div class="pw"><b>10<sup>1</sup></b>10</div>
+        <div class="pw"><b>10<sup>0</sup></b>1</div>
+        <div class="pw neg"><b>10<sup>−1</sup></b>0.1</div>
+        <div class="pw neg"><b>10<sup>−2</sup></b>0.01</div>
+        <div class="pw neg"><b>10<sup>−3</sup></b>0.001</div>
+        <div class="pw neg"><b>10<sup>−4</sup></b>0.000 1</div>
+        <div class="pw neg"><b>10<sup>−6</sup></b>0.000 001</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== 例題一 ===================== -->
+  <section id="ex1">
+    <div class="sec-head">
+      <div class="sec-num">1</div>
+      <div>
+        <h2>例題一：大於 10 的數</h2>
+        <p>不使用計算機，以科學記數法表示下列各數。先自己按一按，再看答案。</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="shifter" data-shifter data-mode="forward">
+        <div class="tabs" data-tabs>
+          <button class="tab on" data-load data-digits="700" data-p="3" data-n0="0">(a) 700</button>
+          <button class="tab" data-load data-digits="56800" data-p="5" data-n0="0">(b) 56 800</button>
+          <button class="tab" data-load data-digits="23" data-p="2" data-n0="0" data-sign="−">(c) −23</button>
+        </div>
+        <div class="shift-row">
+          <div class="num" data-num></div>
+          <div class="times">×</div>
+          <div class="exp" data-exp>10<sup>0</sup></div>
+        </div>
+        <div class="shift-hint" data-hint>按「自動示範」，看小數點怎樣移到 1 至 10 之間。</div>
+        <div class="controls">
+          <button data-left>← 小數點左移一位</button>
+          <button data-right>小數點右移一位 →</button>
+          <button class="primary" data-auto>自動示範</button>
+          <button class="ghost" data-reset>重設</button>
+        </div>
+        <div class="state">
+          <span class="pill" data-state>未完成</span>
+        </div>
+      </div>
+
+      <div class="ex-item" style="margin-top:22px">
+        <div class="ex-q"><span class="lb">(a)</span><span>700 = <strong>7 × 10<sup>2</sup></strong></span></div>
+        <div class="ansline"><span class="why">◄ 把小數點向左移 2 個位：700. → 70.0 → 7.00</span></div>
+      </div>
+      <div class="ex-item">
+        <div class="ex-q"><span class="lb">(b)</span><span>56 800 = <strong>5.68 × 10<sup>4</sup></strong></span></div>
+        <div class="ansline"><span class="why">◄ 把小數點向左移 4 個位：56 800. → 5.6800</span></div>
+      </div>
+      <div class="ex-item">
+        <div class="ex-q"><span class="lb">(c)</span><span>−23 = <strong>−2.3 × 10<sup>1</sup></strong></span></div>
+        <div class="ansline"><span class="why">◄ 把小數點向左移 1 個位：−23. → −2.3（負號照抄，不參與移位）</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== 練習一 ===================== -->
+  <section id="p1">
+    <div class="sec-head">
+      <div class="sec-num">2</div>
+      <div>
+        <h2>練習一</h2>
+        <p>不使用計算機，以科學記數法表示下列各數。</p>
+      </div>
+    </div>
+    <div class="card">
+      <div class="qgrid" data-practice="p1"></div>
+      <div class="btnrow">
+        <button class="primary" data-check="p1">核對答案</button>
+        <button class="ghost" data-reveal="p1">顯示題解</button>
+        <button class="ghost" data-clear="p1">清除</button>
+        <span class="score" data-score="p1"></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== 例題二 ===================== -->
+  <section id="ex2">
+    <div class="sec-head">
+      <div class="sec-num">3</div>
+      <div>
+        <h2>例題二：小於 1 的數</h2>
+        <p>方向相反：小數點要向右移，指數因此是負數。</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="shifter" data-shifter data-mode="forward">
+        <div class="tabs" data-tabs>
+          <button class="tab on" data-load data-digits="8" data-p="0" data-n0="0" data-pad="2">(a) 0.8</button>
+          <button class="tab" data-load data-digits="45" data-p="-1" data-n0="0">(b) 0.045</button>
+          <button class="tab" data-load data-digits="2" data-p="-2" data-n0="0" data-sign="−">(c) −0.002</button>
+        </div>
+        <div class="shift-row">
+          <div class="num" data-num></div>
+          <div class="times">×</div>
+          <div class="exp" data-exp>10<sup>0</sup></div>
+        </div>
+        <div class="shift-hint" data-hint>把小數點移到第一個非零數字之後，數一數移了幾個位。</div>
+        <div class="controls">
+          <button data-left>← 小數點左移一位</button>
+          <button data-right>小數點右移一位 →</button>
+          <button class="primary" data-auto>自動示範</button>
+          <button class="ghost" data-reset>重設</button>
+        </div>
+        <div class="state">
+          <span class="pill" data-state>未完成</span>
+        </div>
+      </div>
+
+      <div class="ex-item" style="margin-top:22px">
+        <div class="ex-q"><span class="lb">(a)</span><span>0.8 = <strong>8 × 10<sup>−1</sup></strong></span></div>
+        <div class="ansline"><span class="why">◄ 把小數點向右移 1 個位：0.8 → 8.（指數 −1，因為數變大了 10 倍）</span></div>
+      </div>
+      <div class="ex-item">
+        <div class="ex-q"><span class="lb">(b)</span><span>0.045 = <strong>4.5 × 10<sup>−2</sup></strong></span></div>
+        <div class="ansline"><span class="why">◄ 把小數點向右移 2 個位：0.045 → 4.5</span></div>
+      </div>
+      <div class="ex-item">
+        <div class="ex-q"><span class="lb">(c)</span><span>−0.002 = <strong>−2 × 10<sup>−3</sup></strong></span></div>
+        <div class="ansline"><span class="why">◄ 把小數點向右移 3 個位：−0.002 → −2</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== 練習二 ===================== -->
+  <section id="p2">
+    <div class="sec-head">
+      <div class="sec-num">4</div>
+      <div>
+        <h2>練習二</h2>
+        <p>不使用計算機，以科學記數法表示下列各數。留意負號，以及數中間的空格。</p>
+      </div>
+    </div>
+    <div class="card">
+      <div class="qgrid" data-practice="p2"></div>
+      <div class="btnrow">
+        <button class="primary" data-check="p2">核對答案</button>
+        <button class="ghost" data-reveal="p2">顯示題解</button>
+        <button class="ghost" data-clear="p2">清除</button>
+        <span class="score" data-score="p2"></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== 例題三 ===================== -->
+  <section id="ex3">
+    <div class="sec-head">
+      <div class="sec-num">5</div>
+      <div>
+        <h2>例題三：反過來，把科學記數法還原</h2>
+        <p>不使用計算機，把下列各數轉換為整數或小數。</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="shifter" data-shifter data-mode="reverse">
+        <div class="tabs" data-tabs>
+          <button class="tab on" data-load data-digits="2" data-p="1" data-n0="3">(a) 2 × 10<sup>3</sup></button>
+          <button class="tab" data-load data-digits="6" data-p="1" data-n0="-2">(b) 6 × 10<sup>−2</sup></button>
+        </div>
+        <div class="shift-row">
+          <div class="num" data-num></div>
+          <div class="times">×</div>
+          <div class="exp" data-exp>10<sup>0</sup></div>
+        </div>
+        <div class="shift-hint" data-hint>把小數點一直移，直到 10 的次方變成 0（即 10<sup>0</sup> = 1）。</div>
+        <div class="controls">
+          <button data-left>← 小數點左移一位</button>
+          <button data-right>小數點右移一位 →</button>
+          <button class="primary" data-auto>自動示範</button>
+          <button class="ghost" data-reset>重設</button>
+        </div>
+        <div class="state">
+          <span class="pill" data-state>未完成</span>
+        </div>
+      </div>
+
+      <div class="cols" style="margin-top:20px">
+        <div class="fact">
+          <h4>(a) 2 × 10<sup>3</sup> = 2 × 1000 = <strong>2000</strong></h4>
+          <p>指數是 +3，小數點向右移 3 個位：2. → 20 → 200 → 2000。</p>
+        </div>
+        <div class="fact">
+          <h4>(b) 6 × 10<sup>−2</sup> = 6 × 0.01 = <strong>0.06</strong></h4>
+          <p>指數是 −2，小數點向左移 2 個位：6. → 0.6 → 0.06。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== 練習三 ===================== -->
+  <section id="p3">
+    <div class="sec-head">
+      <div class="sec-num">6</div>
+      <div>
+        <h2>練習三</h2>
+        <p>不使用計算機，把下列各數轉換為整數或小數。答案可直接輸入數字。</p>
+      </div>
+    </div>
+    <div class="card">
+      <div class="qgrid" data-practice="p3"></div>
+      <div class="btnrow">
+        <button class="primary" data-check="p3">核對答案</button>
+        <button class="ghost" data-reveal="p3">顯示題解</button>
+        <button class="ghost" data-clear="p3">清除</button>
+        <span class="score" data-score="p3"></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== 自我測驗 ===================== -->
+  <section id="quiz">
+    <div class="sec-head">
+      <div class="sec-num">7</div>
+      <div>
+        <h2>自我測驗</h2>
+        <p>8 題隨機出題，包括大數、小數與還原三種題型。每題只有一次機會，答完看總分。</p>
+      </div>
+    </div>
+
+    <div class="quiz-shell">
+      <div class="quiz-top">
+        <h3 data-quiz-title>第 1 / 8 題</h3>
+        <div class="quiz-meta" data-quiz-score>得分 0</div>
+      </div>
+      <div class="quiz-bar"><span data-quiz-bar></span></div>
+      <div data-quiz-body></div>
+      <div class="quiz-done" data-quiz-done>
+        <div class="bigscore" data-quiz-final>0 / 8</div>
+        <p data-quiz-msg></p>
+        <button class="primary" data-quiz-restart>再玩一次</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== 常見錯誤 ===================== -->
+  <section id="notes">
+    <div class="sec-head">
+      <div class="sec-num">8</div>
+      <div>
+        <h2>四個最常扣分的地方</h2>
+        <p>做完上面的練習，再核對一下自己的答案有沒有踩中這些陷阱。</p>
+      </div>
+    </div>
+    <div class="card">
+      <div class="cols">
+        <div class="fact bad-fact">
+          <h4>✗ 前部分不是 1 至 10</h4>
+          <p>40 000 = 40 × 10<sup>3</sup> ✗　　→　　4 × 10<sup>4</sup> ✓<br>
+          a 必須滿足 1 ≤ |a| &lt; 10，所以 40 要再移一位。</p>
+        </div>
+        <div class="fact bad-fact">
+          <h4>✗ 移位數目數錯</h4>
+          <p>56 800 由 5 位整數變成 1 位整數，移了 <strong>4</strong> 個位，不是 5。<br>
+          口訣：指數 = 整數位數 − 1。</p>
+        </div>
+        <div class="fact bad-fact">
+          <h4>✗ 小於 1 的數忘了負指數</h4>
+          <p>0.045 = 4.5 × 10<sup>2</sup> ✗　　→　　4.5 × 10<sup>−2</sup> ✓<br>
+          本來小於 1，寫成 a × 10<sup>n</sup> 後 n 一定是負數。</p>
+        </div>
+        <div class="fact bad-fact">
+          <h4>✗ 負號被「移走」</h4>
+          <p>−0.002 = 2 × 10<sup>−3</sup> ✗　　→　　−2 × 10<sup>−3</sup> ✓<br>
+          負號只跟在前面的數上，不參與小數點移位。</p>
+        </div>
+      </div>
+
+      <div class="fact good-fact" style="margin-top:16px">
+        <h4>一分鐘自我檢查</h4>
+        <ul>
+          <li>前面那個數是否在 1 與 10 之間（可以是負數，但絕對值要小於 10）？</li>
+          <li>原本的數大於 1，指數是否正數？小於 1，指數是否負數？</li>
+          <li>心算驗算：把 a 的小數點按指數移回去，看看是否與原數相同。</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <span>科學記數法 · 互動教學頁（內容依據「03_2B08 整數指數律」工作紙）</span>
+    <span>可離線使用 · 適合中二至中三</span>
+  </footer>
+</div>
+
+<script>
+(function(){
+  "use strict";
+  const $  = (s, r=document) => r.querySelector(s);
+  const $$ = (s, r=document) => Array.from(r.querySelectorAll(s));
+  const sleep = ms => new Promise(r => setTimeout(r, ms));
+
+  /* ============ 數字工具 ============ */
+  // 把數字字串的小數點向右移 k 個位（k 可為負）
+  function compose(digits, p){
+    if (p <= 0) return '0.' + '0'.repeat(-p) + digits;
+    if (p >= digits.length) return digits + '0'.repeat(p - digits.length);
+    return digits.slice(0, p) + '.' + digits.slice(p);
+  }
+  function shiftPoint(str, k){
+    str = String(str);
+    let neg = false;
+    if (str[0] === '-' || str[0] === '−'){ neg = true; str = str.slice(1); }
+    const parts = str.split('.');
+    const digits = parts.join('');
+    const p = parts[0].length + k;
+    return (neg ? '−' : '') + compose(digits, p);
+  }
+  function parseNum(str){
+    if (str == null) return NaN;
+    let s = String(str).trim().replace(/[\s,_]/g, '').replace(/[−–—]/g, '-');
+    if (!/^-?(\d+\.?\d*|\.\d+)$/.test(s)) return NaN;
+    return parseFloat(s);
+  }
+  const eq = (a, b) => Number.isFinite(a) && Number.isFinite(b) && Math.abs(a - b) <= Math.max(1e-9, Math.abs(b) * 1e-9);
+  function group(str){
+    // 為大整數加上空格分隔（科學記數法教學常用的寫法）
+    const neg = str.startsWith('-');
+    let s = neg ? str.slice(1) : str;
+    const [int, frac] = s.split('.');
+    const g = int.replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+    return (neg ? '−' : '') + g + (frac !== undefined ? '.' + frac : '');
+  }
+  function fmtMantissa(v){
+    // 去除浮點誤差
+    let s = String(Math.round(v * 1e12) / 1e12);
+    return s.replace('-', '−');
+  }
+  const sup = n => n < 0 ? '−' + Math.abs(n) : String(n);
+  const SUP = {'0':'⁰','1':'¹','2':'²','3':'³','4':'⁴','5':'⁵','6':'⁶','7':'⁷','8':'⁸','9':'⁹','-':'⁻'};
+  function supU(n){ return String(n).split('').map(c => SUP[c] || c).join(''); }
+
+  /* ============ 小數點移位器 ============ */
+  class Shifter {
+    constructor(root){
+      this.root = root;
+      this.numEl   = $('[data-num]', root);
+      this.expEl   = $('[data-exp]', root);
+      this.hintEl  = $('[data-hint]', root);
+      this.stateEl = $('[data-state]', root);
+      this.mode    = root.dataset.mode || 'forward';
+      this.busy    = false;
+
+      $('[data-left]', root).addEventListener('click', () => this.step(-1));
+      $('[data-right]', root).addEventListener('click', () => this.step(1));
+      $('[data-auto]', root).addEventListener('click', () => this.auto());
+      $('[data-reset]', root).addEventListener('click', () => this.load(this.cfg));
+
+      const tabs = $$('[data-load]', root);
+      tabs.forEach(btn => btn.addEventListener('click', () => {
+        tabs.forEach(t => t.classList.remove('on'));
+        btn.classList.add('on');
+        this.load(btn.dataset);
+      }));
+      const first = tabs.find(t => t.classList.contains('on')) || tabs[0];
+      if (first) this.load(first.dataset);
+    }
+
+    load(d){
+      this.cfg  = d;
+      this.sign = d.sign || '';
+      this.digits = d.digits;
+      this.p0 = Number(d.p);
+      this.n0 = Number(d.n0 || 0);
+      this.p  = this.p0;
+      this.target = (this.mode === 'reverse') ? this.p0 + this.n0 : this.normalized();
+      this.render(false);
+      this.updateText(false);
+      this.hintEl.innerHTML = this.mode === 'reverse'
+        ? '把小數點一直移，直到 10 的次方變成 0。'
+        : '把小數點移到第一個非零數字之後，令前面的數介乎 1 與 10 之間。';
+      this.busy = false;
+    }
+
+    mantissaAt(p){
+      const v = parseFloat(this.sign.replace('−','-') + compose(this.digits, p));
+      return v;
+    }
+    normalized(){
+      let p = this.p0;
+      const m0 = Math.abs(this.mantissaAt(p));
+      let guard = 0;
+      if (m0 < 1){
+        while (Math.abs(this.mantissaAt(p)) < 1 && guard++ < 30) p++;
+      } else {
+        while (Math.abs(this.mantissaAt(p)) >= 10 && guard++ < 30) p--;
+      }
+      return p;
+    }
+    get exp(){ return this.n0 + (this.p0 - this.p); }
+    get isHome(){
+      return this.mode === 'reverse' ? this.exp === 0 : (Math.abs(this.mantissaAt(this.p)) >= 1 && Math.abs(this.mantissaAt(this.p)) < 10);
+    }
+
+    step(dir){
+      if (this.busy) return;
+      const next = this.p + dir;
+      if (next < -8 || next > this.digits.length + 10) return;
+      this.p = next;
+      this.render(true);
+      this.updateText(true);
+    }
+
+    async auto(){
+      if (this.busy) return;
+      this.busy = true;
+      const btn = $('[data-auto]', this.root);
+      btn.disabled = true;
+      let guard = 0;
+      while (!this.isHome && guard++ < 12){
+        const m = this.mantissaAt(this.p);
+        let dir;
+        if (this.mode === 'reverse') dir = Math.sign(this.target - this.p) || 1;
+        else dir = Math.abs(m) < 1 ? 1 : -1;
+        this.p += dir;
+        this.render(true);
+        this.updateText(true);
+        await sleep(700);
+      }
+      if (this.mode === 'reverse' && this.p !== this.target){
+        this.p = this.target; this.render(true); this.updateText(true);
+      }
+      btn.disabled = false;
+      this.busy = false;
+      this.updateText(false, true);
+    }
+
+    render(animate){
+      const oldDot = this.numEl.querySelector('.dot');
+      const oldRect = oldDot ? oldDot.getBoundingClientRect() : null;
+
+      const str = compose(this.digits, this.p);
+      const [int, frac = ''] = str.split('.');
+      let html = '';
+      if (this.sign) html += '<span class="sign">' + this.sign + '</span>';
+      int.split('').forEach(c => {
+        html += '<span class="d' + (this.p <= 0 && c === '0' ? ' pad' : '') + '">' + c + '</span>';
+      });
+      html += '<span class="dot' + (frac === '' ? ' ghost' : '') + '"></span>';
+      frac.split('').forEach(c => { html += '<span class="d">' + c + '</span>'; });
+      this.numEl.innerHTML = html;
+
+      const dot = this.numEl.querySelector('.dot');
+      if (animate && oldRect && dot){
+        const r = dot.getBoundingClientRect();
+        const dx = oldRect.left - r.left;
+        if (Math.abs(dx) > 0.5){
+          dot.style.transition = 'none';
+          dot.style.transform = 'translateX(' + dx + 'px)';
+          dot.classList.add('moving');
+          requestAnimationFrame(() => {
+            dot.style.transition = 'transform .45s cubic-bezier(.34,1.25,.64,1)';
+            dot.style.transform = 'translateX(0)';
+            setTimeout(() => dot.classList.remove('moving'), 460);
+          });
+        }
+      }
+
+      const e = this.exp;
+      const cls = e < 0 ? 'neg' : (e === 0 ? 'zero' : '');
+      this.expEl.innerHTML = '10<sup class="' + cls + '">' + sup(e) + '</sup>';
+    }
+
+    updateText(moved, finished){
+      const e = this.exp;
+      const m = this.mantissaAt(this.p);
+      const k = this.p0 - this.p;
+
+      if (moved){
+        if (k === 0){
+          this.hintEl.textContent = '回到原位，指數是 0。';
+        } else {
+          const dir = k > 0 ? '左' : '右';
+          this.hintEl.innerHTML = '把小數點向' + dir + '移 <b>' + Math.abs(k) + '</b> 個位' +
+            (this.mode === 'forward'
+              ? '，所以 n = <b>' + sup(e) + '</b>'
+              : '，指數變成 <b>' + sup(e) + '</b>');
+        }
+      }
+
+      this.stateEl.classList.remove('done','live');
+      if (this.mode === 'forward'){
+        if (this.isHome){
+          this.stateEl.classList.add('done');
+          this.stateEl.textContent = '✓ 標準形式：' + fmtMantissa(m) + ' × 10' + supU(e);
+        } else {
+          this.stateEl.classList.add('live');
+          this.stateEl.textContent = '現時寫成 ' + fmtMantissa(m) + ' × 10' + supU(e) + '，a 未在 1 至 10 之間';
+        }
+      } else {
+        if (this.isHome){
+          this.stateEl.classList.add('done');
+          this.stateEl.textContent = '✓ 答案 = ' + group(compose(this.digits, this.p));
+        } else {
+          this.stateEl.classList.add('live');
+          this.stateEl.textContent = '還有 ' + Math.abs(e) + ' 個位要移（現時 × 10' + supU(e) + '）';
+        }
+      }
+    }
+  }
+  $$('[data-shifter]').forEach(el => new Shifter(el));
+
+  /* ============ 頂部進度條 ============ */
+  const bar = $('#progress');
+  const onScroll = () => {
+    const h = document.documentElement.scrollHeight - window.innerHeight;
+    bar.style.width = (h > 0 ? Math.min(100, window.scrollY / h * 100) : 0) + '%';
+  };
+  window.addEventListener('scroll', onScroll, {passive:true});
+  onScroll();
+
+  /* ============ 練習題資料 ============ */
+  const PRACTICE = {
+    p1: [
+      {kind:'sci', q:'4000', a:'4', n:3, sol:'4000. → 4.000，把小數點向左移 3 個位，所以 4000 = 4 × 10³。'},
+      {kind:'sci', q:'500 000', a:'5', n:5, sol:'500 000 是 6 位數，移 5 個位，所以 500 000 = 5 × 10⁵。'},
+      {kind:'sci', q:'−8500', a:'−8.5', n:3, sol:'−8500. → −8.500，向左移 3 個位，所以 −8500 = −8.5 × 10³。'}
+    ],
+    p2: [
+      {kind:'sci', q:'0.01', a:'1', n:-2, sol:'0.01 → 1.，向右移 2 個位，所以 0.01 = 1 × 10⁻²。'},
+      {kind:'sci', q:'0.005', a:'5', n:-3, sol:'0.005 → 5.，向右移 3 個位，所以 0.005 = 5 × 10⁻³。'},
+      {kind:'sci', q:'0.000 45', a:'4.5', n:-4, sol:'0.0004 5 → 4.5，向右移 4 個位，所以 0.000 45 = 4.5 × 10⁻⁴。'},
+      {kind:'sci', q:'0.000 002 47', a:'2.47', n:-6, sol:'0.0000024 7 → 2.47，向右移 6 個位，所以 = 2.47 × 10⁻⁶。'},
+      {kind:'sci', q:'−0.000 009', a:'−9', n:-6, sol:'−0.000009 → −9，向右移 6 個位，所以 = −9 × 10⁻⁶。'},
+      {kind:'sci', q:'−0.0035', a:'−3.5', n:-3, sol:'−0.0035 → −3.5，向右移 3 個位，所以 = −3.5 × 10⁻³。'}
+    ],
+    p3: [
+      {kind:'num', q:'7 × 10⁶', ans:7000000, sol:'指數 6，小數點向右移 6 個位：7 → 7 000 000。'},
+      {kind:'num', q:'8.14 × 10⁵', ans:814000, sol:'指數 5，小數點向右移 5 個位：8.14 → 814 000。'},
+      {kind:'num', q:'4 × 10⁻³', ans:0.004, sol:'指數 −3，小數點向左移 3 個位：4 → 0.004。'},
+      {kind:'num', q:'1.2 × 10⁻⁴', ans:0.00012, sol:'指數 −4，小數點向左移 4 個位：1.2 → 0.000 12。'}
+    ]
+  };
+
+  const STORE = {};   // 每組練習的即時狀態
+
+  function renderPractice(key){
+    const box = $('[data-practice="' + key + '"]');
+    box.innerHTML = '';
+    PRACTICE[key].forEach((item, i) => {
+      const el = document.createElement('div');
+      el.className = 'q';
+      el.dataset.i = i;
+      let answerHtml;
+      if (item.kind === 'sci'){
+        answerHtml =
+          '<div class="answer">' +
+            '<label>科學記數法：</label>' +
+            '<input type="text" class="m-in" placeholder="a" autocomplete="off" inputmode="decimal">' +
+            '<span class="x10">× 10<sup>n</sup></span>' +
+            '<input type="text" class="exp-in" placeholder="n" autocomplete="off" inputmode="numeric">' +
+            '<button class="ghost check-one">檢查</button>' +
+          '</div>';
+      } else {
+        answerHtml =
+          '<div class="answer">' +
+            '<label>答案：</label>' +
+            '<input type="text" class="v-in" placeholder="整數或小數" autocomplete="off" inputmode="decimal">' +
+            '<button class="ghost check-one">檢查</button>' +
+          '</div>';
+      }
+      el.innerHTML =
+        '<div class="qn">' + (i + 1) + '.</div>' +
+        '<div>' +
+          '<div class="stem">不使用計算機，' + (item.kind === 'sci' ? '以科學記數法表示 <span class="m">' + item.q + '</span>。' : '把 <span class="m">' + item.q + '</span> 轉換為整數或小數。') + '</div>' +
+          answerHtml +
+          '<div class="fb" aria-live="polite"></div>' +
+          '<div class="sol"></div>' +
+        '</div>';
+      box.appendChild(el);
+
+      $('.check-one', el).addEventListener('click', () => checkOne(key, i, el));
+      $$('input', el).forEach(inp => inp.addEventListener('keydown', ev => {
+        if (ev.key === 'Enter') checkOne(key, i, el);
+      }));
+      $('.sol', el).innerHTML = '<span class="k">題解：</span>' + item.sol;
+    });
+    STORE[key] = {results: new Array(PRACTICE[key].length).fill(false)};
+    updateScore(key);
+  }
+
+  function feedback(el, type, text){
+    const fb = $('.fb', el);
+    fb.className = 'fb show ' + type;
+    fb.innerHTML = text;
+  }
+
+  function checkOne(key, i, el){
+    const item = PRACTICE[key][i];
+    let ok = false, msg = '', type = 'bad';
+
+    if (item.kind === 'sci'){
+      const mIn = $('.m-in', el), eIn = $('.exp-in', el);
+      const mv = parseNum(mIn.value), ev = parseNum(eIn.value);
+      const shown = mIn.value.trim() !== '' || eIn.value.trim() !== '';
+
+      mIn.classList.remove('good','bad');
+      eIn.classList.remove('good','bad');
+
+      if (!shown){
+        msg = '未作答：先輸入前面那個數，再輸入 10 的次方。';
+      } else if (!Number.isFinite(mv) || !Number.isFinite(ev) || ev !== Math.round(ev)){
+        msg = '格式：前面輸入數字（例如 −8.5），後面輸入整數指數（例如 3 或 −2）。';
+      } else {
+        const inRange = Math.abs(mv) >= 1 && Math.abs(mv) < 10;
+        if (!inRange){
+          mIn.classList.add('bad');
+          msg = Math.abs(mv) < 1
+            ? '前面那個數太小了：a 要介乎 1 與 10 之間（例如把 0.45 改成 4.5，指數同時要減 1）。'
+            : '前面那個數太大了：a 要介乎 1 與 10 之間（例如把 45 改成 4.5，指數同時要加 1）。';
+        } else if (!eq(mv, parseNum(item.a))){
+          mIn.classList.add('bad');
+          msg = (item.a.startsWith('−') && mv > 0)
+            ? '數字部分不對，而且漏了負號：原數是負數，a 也要是負數。'
+            : '數字部分不對：把小數點移到第一個非零數字之後再試。';
+        } else if (ev !== item.n){
+          eIn.classList.add('bad');
+          msg = '數字部分正確，但指數不對：再數一次小數點移動了幾個位，並留意方向（大於 1 的數指數為正，小於 1 的數指數為負）。';
+        } else {
+          ok = true; type = 'good';
+          msg = '正確！答案就是 ' + fmtMantissa(parseNum(item.a)) + ' × 10' + supU(item.n) + '。';
+          mIn.classList.add('good'); eIn.classList.add('good');
+          mIn.disabled = true; eIn.disabled = true;
+        }
+      }
+    } else {
+      const vIn = $('.v-in', el);
+      const v = parseNum(vIn.value);
+      vIn.classList.remove('good','bad');
+      if (vIn.value.trim() === ''){
+        msg = '未作答：直接輸入轉換後的整數或小數。';
+      } else if (!Number.isFinite(v)){
+        msg = '請輸入數字，例如 7000000 或 0.004（可以加逗號或空格）。';
+      } else if (!eq(v, item.ans)){
+        vIn.classList.add('bad');
+        msg = (item.ans > 0 && v === 0) ? '答案不會是 0：留意指數的方向。'
+            : '不對：指數是哪個方向，小數點就往那個方向移相同數目的位。';
+      } else {
+        ok = true; type = 'good';
+        msg = '正確！' + group(String(item.ans).replace('-','−')) + '。';
+        vIn.classList.add('good'); vIn.disabled = true;
+      }
+    }
+
+    feedback(el, type, msg);
+    if (ok){
+      el.classList.add('resolved');
+      STORE[key].results[i] = true;
+      $('.sol', el).classList.add('show');
+      updateScore(key);
+    } else {
+      STORE[key].results[i] = false;
+      updateScore(key);
+    }
+  }
+
+  function supText(n){ return n < 0 ? '⁻' + Math.abs(n) : String(n); }
+
+  function updateScore(key){
+    const r = STORE[key].results;
+    const done = r.filter(Boolean).length;
+    $('[data-score="' + key + '"]').innerHTML = '已答對 <b>' + done + '</b> / ' + r.length;
+  }
+
+  function checkAll(key){
+    const box = $('[data-practice="' + key + '"]');
+    $$('.q', box).forEach(el => {
+      const i = Number(el.dataset.i);
+      if (!STORE[key].results[i]) checkOne(key, i, el);
+    });
+  }
+
+  $$('[data-check]').forEach(btn => btn.addEventListener('click', () => checkAll(btn.dataset.check)));
+  $$('[data-reveal]').forEach(btn => btn.addEventListener('click', () => {
+    $$('[data-practice="' + btn.dataset.reveal + '"] .sol').forEach(s => s.classList.add('show'));
+  }));
+  $$('[data-clear]').forEach(btn => btn.addEventListener('click', () => {
+    const key = btn.dataset.clear;
+    const box = $('[data-practice="' + key + '"]');
+    $$('.q', box).forEach(el => {
+      $$('input', el).forEach(i => { i.value=''; i.disabled=false; i.classList.remove('good','bad'); });
+      el.classList.remove('resolved');
+      $('.fb', el).className = 'fb';
+      $('.sol', el).classList.remove('show');
+    });
+    STORE[key].results.fill(false);
+    updateScore(key);
+  }));
+
+  ['p1','p2','p3'].forEach(renderPractice);
+
+  /* ============ 自我測驗 ============ */
+  const QUIZ = { total: 8, i: 0, score: 0, items: [], locked: false };
+
+  const rnd = (a, b) => a + Math.random() * (b - a);
+  const trimNum = str => str.includes('.') ? str.replace(/\.?0+$/, '') : str;
+  const pick = arr => arr[Math.floor(Math.random() * arr.length)];
+  function decStr(v){
+    return (Math.round(v * 1e12) / 1e12).toFixed(12).replace(/0+$/, '').replace(/\.$/, '');
+  }
+  function fmtValue(str){
+    // 依工作紙習慣：整數每三位一個空格；很小的數，小數部分每三位一個空格
+    let neg = str.startsWith('-');
+    let s = neg ? str.slice(1) : str.replace('−', '');
+    const [int, frac] = s.split('.');
+    let out = int;
+    if (int.length > 4) out = int.replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+    if (frac && frac.length > 3){
+      out += '.' + frac.replace(/(\d{3})(?=\d)/g, '$1 ');
+    } else if (frac){
+      out += '.' + frac;
+    }
+    return (neg ? '−' : '') + out;
+  }
+
+  // 產生 [1, 10) 之間的尾數，指定小數位，並確保不會被四捨五入成 10
+  function randMantissa(dec){
+    const max = dec === 0 ? 9 : Number((10 - Math.pow(10, -dec)).toFixed(dec));
+    let v = Number((1 + Math.random() * (max - 1)).toFixed(dec));
+    if (v < 1) v = 1;
+    if (v >= 10) v = max;
+    return trimNum(v.toFixed(dec));
+  }
+  function qLarge(negative){
+    const dec = pick([0, 1, 2]);
+    const aStr = randMantissa(dec);
+    const n = Math.floor(rnd(2, 7));            // 2..6
+    const intStr = shiftPoint(aStr, n);
+    const sign = negative ? '-' : '';
+    return {kind:'sci', a:sign + aStr, n, value:Number(sign + intStr), stem: fmtValue(sign + intStr)};
+  }
+  function qSmall(negative){
+    const dec = pick([0, 1, 2]);
+    const aStr = randMantissa(dec);
+    const n = -Math.floor(rnd(1, 6));           // −1..−5
+    const sign = negative ? '-' : '';
+    const numStr = sign + shiftPoint(aStr, n);
+    return {kind:'sci', a:sign + aStr, n, value:Number(numStr), stem: fmtValue(numStr)};
+  }
+  function qRev(negative){
+    const dec = pick([0, 1]);
+    const aStr = randMantissa(dec);
+    const n = pick([-4, -3, -2, 2, 3, 4, 5]);
+    const sign = negative ? '-' : '';
+    const numStr = sign + shiftPoint(aStr, n);
+    return {kind:'rev', a:sign + aStr, n, value:Number(numStr),
+            stem:(negative ? '−' : '') + aStr + ' × 10<sup>' + sup(n) + '</sup>'};
+  }
+
+  function buildQuiz(){
+    const set = [];
+    set.push(qLarge(false), qLarge(true), qSmall(false), qSmall(true), qRev(false), qRev(true), qLarge(false), qSmall(false));
+    // 打散，但保持三種題型都出現
+    for (let i = set.length - 1; i > 0; i--){
+      const j = Math.floor(Math.random() * (i + 1));
+      [set[i], set[j]] = [set[j], set[i]];
+    }
+    return set;
+  }
+
+  const qBody = $('[data-quiz-body]');
+  const qTitle = $('[data-quiz-title]');
+  const qScore = $('[data-quiz-score]');
+  const qBar = $('[data-quiz-bar]');
+  const qDone = $('[data-quiz-done]');
+
+  function quizStart(){
+    QUIZ.i = 0; QUIZ.score = 0; QUIZ.locked = false;
+    QUIZ.items = buildQuiz();
+    qDone.classList.remove('show');
+    qBody.style.display = '';
+    renderQuiz();
+  }
+
+  function renderQuiz(){
+    const it = QUIZ.items[QUIZ.i];
+    QUIZ.locked = false;
+    qTitle.textContent = '第 ' + (QUIZ.i + 1) + ' / ' + QUIZ.total + ' 題';
+    qScore.innerHTML = '得分 <b style="color:#fff">' + QUIZ.score + '</b>';
+    qBar.style.width = (QUIZ.i / QUIZ.total * 100) + '%';
+
+    const stem = it.kind === 'sci'
+      ? '以科學記數法表示 <span class="m">' + it.stem + '</span>'
+      : '把 <span class="m">' + it.stem + '</span> 轉換為整數或小數';
+
+    const answer = it.kind === 'sci'
+      ? '<div class="answer">' +
+          '<input type="text" class="m-in" placeholder="a" autocomplete="off" inputmode="decimal">' +
+          '<span class="x10">× 10<sup>n</sup></span>' +
+          '<input type="text" class="exp-in" placeholder="n" autocomplete="off" inputmode="numeric">' +
+          '<button class="primary" data-quiz-check>確定</button>' +
+        '</div>'
+      : '<div class="answer">' +
+          '<input type="text" class="v-in" placeholder="答案" autocomplete="off" inputmode="decimal">' +
+          '<button class="primary" data-quiz-check>確定</button>' +
+        '</div>';
+
+    qBody.innerHTML = '<div class="qtext">' + stem + '</div>' + answer + '<div class="fb" aria-live="polite"></div>';
+
+    $('[data-quiz-check]', qBody).addEventListener('click', quizCheck);
+    $$('input', qBody).forEach(inp => inp.addEventListener('keydown', ev => {
+      if (ev.key === 'Enter') quizCheck();
+    }));
+    const first = $('input', qBody);
+    if (first && window.matchMedia('(min-width: 721px)').matches) first.focus();
+  }
+
+  function quizCheck(){
+    if (QUIZ.locked) return;
+    const it = QUIZ.items[QUIZ.i];
+    const fb = $('.fb', qBody);
+    let ok = false, msg = '';
+
+    if (it.kind === 'sci'){
+      const mIn = $('.m-in', qBody), eIn = $('.exp-in', qBody);
+      const mv = parseNum(mIn.value), ev = parseNum(eIn.value);
+      if (!Number.isFinite(mv) || !Number.isFinite(ev) || ev !== Math.round(ev)){
+        msg = '請在前面輸入數字，在後面輸入整數指數。';
+      } else if (Math.abs(mv) < 1 || Math.abs(mv) >= 10){
+        msg = '數字部分要在 1 與 10 之間，再試一次（先想清楚小數點要移幾個位）。';
+      } else if (!eq(mv, parseNum(it.a))){
+        msg = '數字部分不對：' + (parseNum(it.a) < 0 && mv > 0 ? '漏了負號。' : '把原數的小數點移到第一個非零數字之後。');
+      } else if (ev !== it.n){
+        msg = '指數不對：再數一次移位數目與方向。';
+      } else {
+        ok = true;
+        msg = '正確！' + fmtMantissa(parseNum(it.a)) + ' × 10' + supU(it.n);
+      }
+    } else {
+      const vIn = $('.v-in', qBody);
+      const v = parseNum(vIn.value);
+      if (!Number.isFinite(v)){
+        msg = '請輸入數字。';
+      } else if (!eq(v, it.value)){
+        msg = '不對：' + (it.n > 0 ? '指數是正數，小數點向右移 ' + it.n + ' 個位。' : '指數是負數，小數點向左移 ' + Math.abs(it.n) + ' 個位。');
+      } else {
+        ok = true;
+        msg = '正確！' + fmtValue(decStr(it.value));
+      }
+    }
+
+    fb.className = 'fb show ' + (ok ? 'good' : 'bad');
+    fb.textContent = msg;
+
+    if (ok){
+      QUIZ.score++;
+      QUIZ.locked = true;
+      $$('input', qBody).forEach(i => i.disabled = true);
+      const btn = $('[data-quiz-check]', qBody);
+      btn.textContent = (QUIZ.i === QUIZ.total - 1) ? '看成績' : '下一題 →';
+      btn.classList.add('ok');
+      btn.onclick = () => {
+        btn.classList.remove('ok');
+        if (QUIZ.i === QUIZ.total - 1){ quizFinish(); }
+        else { QUIZ.i++; renderQuiz(); }
+      };
+      qScore.innerHTML = '得分 <b style="color:#fff">' + QUIZ.score + '</b>';
+      if (window.matchMedia('(min-width: 721px)').matches) btn.focus();
+    }
+  }
+
+  function quizFinish(){
+    qBar.style.width = '100%';
+    qTitle.textContent = '完成';
+    qBody.style.display = 'none';
+    qDone.classList.add('show');
+    $('[data-quiz-final]').textContent = QUIZ.score + ' / ' + QUIZ.total;
+    const msg = QUIZ.score === QUIZ.total ? '滿分！小數點移位已經完全掌握。'
+      : QUIZ.score >= 6 ? '不錯，只差少許。回去看答錯那類的例題，再試一次。'
+      : QUIZ.score >= 4 ? '基礎有了，但指數的方向與數目仍會出錯。重做練習一至三會很有幫助。'
+      : '先回到例題，跟著小數點逐步移位，再做練習。';
+    $('[data-quiz-msg]').textContent = msg;
+    qScore.innerHTML = '得分 <b style="color:#fff">' + QUIZ.score + '</b>';
+  }
+
+  $('[data-quiz-restart]').addEventListener('click', quizStart);
+  quizStart();
+})();
+</script>
+</body>
+</html>
